@@ -4,28 +4,37 @@
 > Indica si has usado **Variante A (IAM Role)** o **Variante B (aws configure)**.
 
 ## 0) Identificación
-- Alumno/a:
-- Grupo:
-- Variante usada (A/B):
-- Región AWS:
-- Bucket S3:
+- Alumno/a: Hancel Fernando
+- Grupo: IABD
+- Variante usada (A/B): A
+- Región AWS: us-east-1
+- Bucket S3: s3-streamlit-ra2
 
 ---
 
 ## 1) S3 privado
-- [ ] Captura del bucket (nombre y región)
-- [ ] Captura/confirmación de que **no es público** (Block Public Access o permisos)
-- [ ] Captura del objeto JSON en `data/sensores/`
+- [x] Captura del bucket (nombre y región)
+![alt text](capturas/1.1-S3_Privado.png)
+
+- [x] Captura/confirmación de que **no es público** (Block Public Access o permisos)
+![alt text](capturas/1.2-S3_Privado.png)
+
+- [x] Captura del objeto JSON en `data/sensores/`
+![alt text](capturas/1.3-S3_Privado.png)
 
 **Notas:**
-- Key usada (S3_KEY):
+- Key usada (S3_KEY): `s3://s3-streamlit-ra2/data/sensores/iabd05_sensores.json`
 
 ---
 
 ## 2) Notebook / Script de subida
-- [ ] Captura de la ejecución del notebook/script subiendo a S3
-- [ ] Enlace o ruta del archivo en el repo (`notebooks/...`)
+- [x] Captura de la ejecución del notebook/script subiendo a S3
+![alt text](capturas/2.1-Notebook_Script.png)
+![alt text](capturas/2.2-Notebook_Script.png)
+![alt text](capturas/2.3-Notebook_Script.png)
 
+- [x] Enlace o ruta del archivo en el repo (`notebooks/...`)
+`https://github.com/HenzeI/ra2-awsacademy-s3-streamlit-starter-template/tree/main/notebooks/generar_y_subir_iabd05_sensores.ipynb`
 ---
 
 ## 3) EC2 y red
