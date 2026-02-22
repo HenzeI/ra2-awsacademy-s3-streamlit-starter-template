@@ -75,23 +75,35 @@ aws s3 ls s3://<BUCKET>/data/sensores/
 ## 6) Dashboard (funcionalidad)
 Incluye capturas donde se vea:
 
-- [ ] Filtro por `sensor_state`
-- [ ] Slider de temperatura
-- [ ] Tabla filtrada
-- [ ] Gráfica línea (temperatura vs tiempo)
-- [ ] Gráfica barras (CO₂ por sensor)
-- [ ] Mapa con sensores
+- [x] Filtro por `sensor_state`
+![alt text](capturas/6.1-Dashboard.png)
 
+- [x] Slider de temperatura
+![alt text](capturas/6.2-Dashboard.png)
+
+- [x] Tabla filtrada
+![alt text](capturas/6.3-Dashboard.png)
+
+- [x] Gráfica línea (temperatura vs tiempo)
+![alt text](capturas/6.4-Dashboard.png)
+
+- [x] Gráfica barras (CO₂ por sensor)
+![alt text](capturas/6.4-Dashboard.png)
+
+- [x] Mapa con sensores
+![alt text](capturas/6.5-Dashboard.png)
 ---
 
 ## 7) Despliegue final
-- [ ] Comando usado para arrancar en segundo plano (ej. `nohup` o script)
-- [ ] Captura del log (`tail -n 50 streamlit.log` o similar)
-- [ ] URL final:
+- [x] Comando usado para arrancar en segundo plano (ej. `nohup` o script)
+![alt text](capturas/7.1-Despligue.png)
+
+- [x] Captura del log (`tail -n 50 streamlit.log` o similar)
+- [x] URL final:
 
 **URL:** `http://IP_PUBLICA_EC2:8501`
 
-- [ ] Captura en navegador accediendo a la URL
+- [x] Captura en navegador accediendo a la URL
 
 ---
 
