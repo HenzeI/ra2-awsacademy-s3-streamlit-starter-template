@@ -35,63 +35,68 @@ with st.sidebar:
 
 @st.cache_data(show_spinner=False)
 def load_data(bucket: str, key: str, region: str) -> pd.DataFrame:
-    """Carga datos desde S3 y devuelve un DataFrame listo para usar.
-
-    TODO (obligatorio):
-    1) Leer JSON desde S3 con `load_json_from_s3(bucket, key, region)`
-    2) Convertir a DataFrame con `to_dataframe(...)`
-    3) Asegurar columnas con `ensure_columns(df)`
-    4) Parsear timestamp con `parse_time(df)`
-
-    NOTA: No incluyas credenciales en el código. Usa IAM Role (Variante A) o `aws configure` (Variante B).
-    """
-    # --- TODO: implementa ---
-    raise NotImplementedError("Implementa load_data()")
+    """Carga datos desde S3 y devuelve un DataFrame listo para usar"""
+    raw = load_json_from_s3(bucket, key, region)
+    df = to_dataframe(raw)
+    df = ensure_columns(df)
+    df = parse_time(df)
+    return df
 
 
 def apply_filters(df: pd.DataFrame, sensor_state: str, temp_min: float, temp_max: float) -> pd.DataFrame:
-    """Aplica filtros del sidebar.
+    """Aplica filtros del sidebar"""
+    fdf = df.copy()
 
-    TODO (obligatorio):
-    - Si sensor_state != '(todos)', filtra por sensor_state (case-insensitive).
-    - Filtra por temperatura en el rango [temp_min, temp_max].
-    """
-    # --- TODO: implementa ---
-    raise NotImplementedError("Implementa apply_filters()")
+    if sensor_state != "(todos)":
+        state_mask = (
+            fdf["sensor_state"]
+            .astype("string")
+            .str.strip()
+            .str.lower()
+            == sensor_state.strip().lower()
+        )
+        fdf = fdf[state_mask]
+
+    temp_mask = fdf["temperature_c"].between(temp_min, temp_max, inclusive="both")
+    fdf = fdf[temp_mask]
+    return fdf
 
 
 def plot_temperature(df: pd.DataFrame):
-    """Devuelve una figura Plotly de línea: temperatura vs tiempo.
-
-    TODO (obligatorio):
-    - Eje X: timestamp
-    - Eje Y: temperature_c
-    - Color: sensor_id (recomendado)
-    """
-    # --- TODO: implementa ---
-    raise NotImplementedError("Implementa plot_temperature()")
+    """Devuelve una figura Plotly de línea: temperatura vs tiempo"""
+    fig = px.line(
+        df.sort_values("timestamp"),
+        x="timestamp",
+        y="temperature_c",
+        color="sensor_id",
+        markers=False,
+        title="Temperatura vs tiempo",
+    )
+    fig.update_layout(xaxis_title="timestamp", yaxis_title="temperature_c")
+    return fig
 
 
 def plot_co2(df: pd.DataFrame):
-    """Devuelve una figura Plotly de barras: CO2 agregado por sensor.
-
-    TODO (obligatorio):
-    - Agrupa por sensor_id
-    - Métrica: media (recomendado) o suma de co2_ppm
-    """
-    # --- TODO: implementa ---
-    raise NotImplementedError("Implementa plot_co2()")
+    """Devuelve una figura Plotly de barras: CO2 agregado por sensor"""
+    co2_by_sensor = (
+        df.groupby("sensor_id", dropna=False, as_index=False)["co2_ppm"]
+        .mean()
+        .sort_values("co2_ppm", ascending=False)
+    )
+    fig = px.bar(
+        co2_by_sensor,
+        x="sensor_id",
+        y="co2_ppm",
+        title="CO2 medio por sensor",
+    )
+    fig.update_layout(xaxis_title="sensor_id", yaxis_title="co2_ppm (media)")
+    return fig
 
 
 def render_map(df: pd.DataFrame):
-    """Muestra el mapa con st.map() usando lat/lon.
-
-    TODO (obligatorio):
-    - Quita filas sin lat/lon
-    - Llama a st.map(...)
-    """
-    # --- TODO: implementa ---
-    raise NotImplementedError("Implementa render_map()")
+    """Muestra el mapa con st.map() usando lat/lon"""
+    map_df = df.dropna(subset=["lat", "lon"])[["lat", "lon"]]
+    st.map(map_df)
 
 
 # --- Control recarga cache ---

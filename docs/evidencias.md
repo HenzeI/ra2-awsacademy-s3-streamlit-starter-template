@@ -38,9 +38,14 @@
 ---
 
 ## 3) EC2 y red
-- [ ] Captura de la instancia EC2 (Ubuntu 22.04)
-- [ ] Captura del Security Group con puerto 8501 abierto (según reglas del lab)
-- [ ] Salida de `ssh` conectando (sin mostrar claves)
+- [x] Captura de la instancia EC2 (Ubuntu 22.04)
+![alt text](capturas/3.1-EC2yRed.png)
+
+- [x] Captura del Security Group con puerto 8501 abierto (según reglas del lab)
+![alt text](capturas/3.2-EC2yRed.png)
+
+- [x] Salida de `ssh` conectando (sin mostrar claves)
+![alt text](capturas/3.3-EC2yRed.png)
 
 ---
 
@@ -52,13 +57,18 @@ aws sts get-caller-identity
 aws s3 ls s3://<BUCKET>/data/sensores/
 ```
 
-- [ ] Captura/salida de ambos comandos
+- [x] Captura/salida de ambos comandos
+![alt text](capturas/4-S3desdeEC2.png)
 
 ---
 
 ## 5) Streamlit en EC2
-- [ ] Captura de `streamlit hello` funcionando (o `python -c "import streamlit"`)
-- [ ] Captura de instalación de dependencias (`pip install -r requirements.txt`)
+- [x] Captura de `streamlit hello` funcionando (o `python -c "import streamlit"`)
+![alt text](capturas/5.1-Streamlit_en_EC2.png)
+
+- [x] Captura de instalación de dependencias (`pip install -r requirements.txt`)
+![alt text](capturas/5.2-Streamlit_en_EC2.png)
+![alt text](capturas/5.3-Streamlit_en_EC2.png)
 
 ---
 
