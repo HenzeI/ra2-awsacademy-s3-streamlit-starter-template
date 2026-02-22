@@ -1,88 +1,115 @@
-# RA2 SBD · Dashboard IoT en Streamlit con datos en S3 (AWS Academy) — Plantilla Profesor
+# Proyecto RA2: Dashboard IoT con Streamlit y S3
 
-Este repositorio es la **plantilla oficial** para la *Tarea Evaluable RA2* del curso de especialización (Sistemas de Big Data) en entorno **AWS Academy Lab**.
+## Descripción
+Este proyecto implementa un flujo completo de datos IoT en AWS:
 
-## Objetivo
-Implementar un **pipeline sencillo**:
-1. Generar/obtener datos IoT (JSON) y **subirlos a un bucket S3 privado**.
-2. Desplegar una app **Streamlit** en una **EC2 Ubuntu 24.04** que **lee el JSON desde S3**.
-3. Construir un dashboard con:
-   - filtros (estado del sensor + rango de temperatura),
-   - tabla filtrada,
-   - gráficas Plotly,
-   - mapa (lat/lon),
-   - despliegue accesible por `http://IP_PUBLICA:8501`.
+1. Generación/ingesta de datos en formato JSON.
+2. Almacenamiento en un bucket S3 privado.
+3. Lectura desde una aplicación Streamlit.
+4. Visualización y filtrado de datos en un dashboard web.
+5. Despliegue en una instancia EC2 accesible por navegador.
 
-> El enunciado completo, evidencias y rúbrica están en `docs/`.
+La app está pensada para el entorno de AWS Academy, usando buenas prácticas de seguridad (sin claves en el repositorio).
 
-> Pistas opcionales: ver `docs/pistas.md`.
-
-
----
-
-## Flujo de trabajo (alumnado)
-1. Haced **Fork** de este repo a vuestra cuenta de GitHub.
-2. Trabajad solo en vuestro fork (commits frecuentes).
-3. Entrega: **enlace al repo** + **tag** `v1.0-entrega` (ver `docs/entrega.md`).
-
----
-
-## Quickstart (local, opcional)
-> Puede ejecutarse en local si tenéis credenciales AWS configuradas (o si usáis un JSON local de prueba).
-
-```bash
-python3 -m venv .venv
-source .venv/bin/activate
-pip install -r requirements.txt
-cp .env.example .env  # opcional (no se sube)
-streamlit run app/dashboard.py
+## Estructura de carpetas
+```text
+  ra2-awsacademy-s3-streamlit-starter-template/
+  │
+  ├── app/
+  │   ├── dashboard.py
+  │   └── services/
+  │       ├── preprocessing.py
+  │       └── s3_loader.py
+  │
+  ├── docs/
+  │   ├── decisiones.md
+  │   ├── entrega.md
+  │   ├── enunciado.md
+  │   ├── evidencias.md
+  │   └── capturas/
+  │
+  ├── notebooks/
+  │   └── generar_y_subir_iabd05_sensores.ipynb
+  │
+  ├── scripts/
+  │   ├── healthcheck.sh
+  │   ├── ec2_setup.sh
+  │   └── run_streamlit_nohup.sh
+  │
+  ├── .gitignore
+  └── README.md
 ```
 
----
+## Características del dashboard
+El dashboard (`app/dashboard.py`) incluye:
 
-## Quickstart (EC2 Ubuntu 24.04 en AWS Academy)
-En la EC2:
+- Carga de datos JSON desde S3 (bucket y key configurables).
+- Normalización y preprocesado de columnas.
+- Filtro por estado del sensor (`OK`, `WARN`, `FAIL` o todos).
+- Filtro por rango de temperatura.
+- Tabla de registros filtrados.
+- Gráfica de línea: temperatura en el tiempo por sensor.
+- Gráfica de barras: CO2 agregado por sensor.
+- Mapa de sensores con `lat/lon`.
+- Caché de datos y botón de recarga.
+
+## Funcionamiento de los scripts
+
+### `scripts/ec2_setup.sh`
+Prepara el entorno en EC2:
+
+1. Instala dependencias del sistema (`python3-pip`, `python3-venv`, `git`).
+2. Crea entorno virtual `.venv`.
+3. Instala dependencias de Python desde `requirements.txt`.
+4. Verifica que Streamlit está instalado.
+
+### `scripts/run_streamlit_nohup.sh`
+Arranca el dashboard en segundo plano:
+
+1. Se posiciona en la raíz del repo.
+2. Activa `.venv` si existe.
+3. Ejecuta Streamlit con `nohup` para que siga corriendo al cerrar SSH.
+4. Expone por defecto `0.0.0.0:8501`.
+5. Guarda logs en `streamlit.log`.
+
+Variables opcionales:
+
+- `PORT` (por defecto `8501`)
+- `ADDR` (por defecto `0.0.0.0`)
+
+## Despliegue en EC2 por SSH (AWS)
+El despliegue se hace conectando por SSH a la instancia EC2.
+
+Ejemplo de flujo:
 
 ```bash
-sudo apt update
-sudo apt install -y git
-git clone <URL_DE_VUESTRO_FORK>
+ssh -i <tu-clave.pem> ubuntu@<IP_PUBLICA_EC2>
+git clone <url-del-repo>
 cd <repo>
+
+chmod +x scripts/ec2_setup.sh
+chmod +x scripts/run_streamlit_nohup.sh
+
 bash scripts/ec2_setup.sh
+
+# Definir configuracion S3
+export AWS_REGION=<region>
+export S3_BUCKET=<bucket>
+export S3_KEY=data/sensores/iabd05_sensores.json
+
+# Arrancar app
 bash scripts/run_streamlit_nohup.sh
 ```
 
-Abrir:
-- `http://IP_PUBLICA_EC2:8501`
+Luego se accede desde el navegador:
 
----
-
-## Configuración por variables de entorno
-La app usa estas variables (en EC2 es recomendable exportarlas en `~/.bashrc` o en un `.env` **no versionado**):
-
-- `AWS_REGION` (ej. `us-west-1`)
-- `S3_BUCKET` (nombre del bucket)
-- `S3_KEY` (ruta del objeto, ej. `data/sensores/iabdXX_sensores.json`)
-
-Ejemplo:
-
-```bash
-export AWS_REGION=us-west-1
-export S3_BUCKET=mi-bucket-privado
-export S3_KEY=data/sensores/iabd01_sensores.json
+```text
+http://IP_PUBLICA_EC2:8501
 ```
 
-**Importante:** No subáis claves (`AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY`, `.pem`, etc.) al repo.
+## Seguridad y credenciales
+- No subir claves AWS, tokens, `.pem` ni `.env` con secretos.
+- Acceso recomendado a S3: `aws configure` en EC2 (sin versionar credenciales).
 
----
-
-## Estructura del repo
-- `app/` → Streamlit + servicios de carga/procesado
-- `scripts/` → setup EC2 y arranque en segundo plano
-- `docs/` → enunciado, entrega, evidencias, rúbrica
-- `notebooks/` → aquí irá vuestro notebook/script de subida a S3
-
----
-
-## Licencia
-Uso docente.
+## Autor
+- [Hancel Fernando Abrines Vasallo](https://github.com/daydroidmuchiri)

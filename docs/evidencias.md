@@ -6,7 +6,7 @@
 ## 0) Identificación
 - Alumno/a: Hancel Fernando
 - Grupo: IABD
-- Variante usada (A/B): A
+- Variante usada (A/B): B
 - Región AWS: us-east-1
 - Bucket S3: s3-streamlit-ra2
 
@@ -99,11 +99,14 @@ Incluye capturas donde se vea:
 ![alt text](capturas/7.1-Despligue.png)
 
 - [x] Captura del log (`tail -n 50 streamlit.log` o similar)
-- [x] URL final:
+![alt text](capturas/7.2-Despligue.png)
 
-**URL:** `http://IP_PUBLICA_EC2:8501`
+- [x] URL final: 
+
+**URL:** `http://98.93.40.17:8501/`
 
 - [x] Captura en navegador accediendo a la URL
+![alt text](capturas/7.3-Despligue.png)
 
 ---
 
